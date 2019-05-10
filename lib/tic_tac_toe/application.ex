@@ -9,7 +9,7 @@ defmodule TicTacToe.Application do
     # List all child processes to be supervised
     children = [
       # Start the Ecto repository
-      TicTacToe.Repo,
+      #TicTacToe.Repo,
       # Start the endpoint when the application starts
       TicTacToeWeb.Endpoint
       # Starts a worker by calling: TicTacToe.Worker.start_link(arg)
