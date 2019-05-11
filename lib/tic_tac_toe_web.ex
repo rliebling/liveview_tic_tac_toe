@@ -23,6 +23,7 @@ defmodule TicTacToeWeb do
 
       import Plug.Conn
       import TicTacToeWeb.Gettext
+      import Phoenix.LiveView.Controller, only: [live_render: 3]
       alias TicTacToeWeb.Router.Helpers, as: Routes
     end
   end
@@ -42,6 +43,8 @@ defmodule TicTacToeWeb do
       import TicTacToeWeb.ErrorHelpers
       import TicTacToeWeb.Gettext
       alias TicTacToeWeb.Router.Helpers, as: Routes
+
+      import Phoenix.LiveView, only: [live_render: 2, live_render: 3]
     end
   end
 
@@ -50,6 +53,8 @@ defmodule TicTacToeWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+
+      import Phoenix.LiveView.Router
     end
   end
 
