@@ -37,6 +37,7 @@ defmodule TicTacToeWeb.BoardView do
 
   def mount(_session, socket) do
     TicTacToeWeb.Endpoint.subscribe(@topic, [])
+    TicTacToeWeb.Endpoint.broadcast_from(self(), @topic, "get_state", %{})
     # Phoenix.PubSub.subscribe(@topic)
     {:ok, assign(socket, msg: "Start!", game: TicTacToe.Game.new)}
   end
@@ -52,11 +53,23 @@ defmodule TicTacToeWeb.BoardView do
     end
   end
 
+  def handle_info(%{topic: @topic, event: "get_state"},  socket) do
+    IO.puts "get_state #{inspect( self())}"
+    TicTacToeWeb.Endpoint.broadcast_from(self(), @topic, "init_state", %{game: socket.assigns[:game], msg: socket.assigns[:msg]})
+    {:noreply, socket}
+  end
+
+  def handle_info(%{topic: @topic, event: "init_state", payload: %{game: game, msg: msg}},  socket) do
+    IO.puts "init_state:  #{inspect(self())}"
+
+    {:noreply, assign(socket, game: game, msg: msg)}
+  end
+
   def handle_info(%{topic: @topic, payload: %{game: game, msg: msg}},  socket) do
     {:noreply, assign(socket, game: game, msg: msg)}
   end
   def handle_info(msg,   socket) do
-    IO.inspect(msg)
+    IO.puts("default handle_info: #{inspect(msg)}")
     {:noreply, socket}
   end
 
