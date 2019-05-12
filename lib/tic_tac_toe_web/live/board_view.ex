@@ -32,6 +32,8 @@ defmodule TicTacToeWeb.BoardView do
     <td width="33%" phx-click="click_cell" phx-value="2,2"><%= square(@game, "2,2") %></td>
     </tr>
     </table>
+
+    <input type="button" phx-click="new_game" value="New game"/>
     """
   end
 
@@ -42,9 +44,14 @@ defmodule TicTacToeWeb.BoardView do
     {:ok, assign(socket, msg: "Start!", game: TicTacToe.Game.new)}
   end
 
+  def handle_event("new_game",  _value, socket) do
+    new_game = TicTacToe.Game.new
+    TicTacToeWeb.Endpoint.broadcast_from(self(), @topic, "move", %{game: new_game, msg: "New game!"})
+    {:noreply, assign(socket, msg: "Start!", game: new_game)}
+  end
+
   def handle_event("click_cell",  coord_str, socket) do
     coords = parse_coords(coord_str)
-    IO.inspect socket
     result = TicTacToe.Game.move(socket.assigns[:game], coords)
     case result do
       {:ok, updated_game, msg} -> TicTacToeWeb.Endpoint.broadcast_from(self(), @topic, "move", %{game: updated_game, msg: msg})
